@@ -1,0 +1,1 @@
+# bnb2511-smart-panel-gen-infographic
