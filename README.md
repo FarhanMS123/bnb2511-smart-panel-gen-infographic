@@ -9,4 +9,6 @@
 - Auto integrate MCP server
 - Other features: can build cards of news or information and giving quick answer
 - Panel can connect to TV, Smartphone, smart speaker, or Laptop; screen-aware rows number
-- https://www.youtube.com/watch?v=wraF2DjALls
+
+![](./docs/sample-1.png)
+- ![Microsoft Future Vision | Youtube](https://www.youtube.com/watch?v=wraF2DjALls)
