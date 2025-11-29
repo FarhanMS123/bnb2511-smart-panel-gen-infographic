@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/scripts',
     '@nuxt/ui',
-    '@nuxt/eslint'
+    '@nuxt/eslint',
+    'vuetify-nuxt-module'
   ]
 })
