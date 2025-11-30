@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     // @ts-ignore
     const modelName = process.env.GEMINI_MODEL || "gemini-3-pro-preview"
 
-    console.log(process.env)
+    // console.log(process.env)
 
     if (!project) {
         throw createError({ statusCode: 500, statusMessage: 'VERTEX_PROJECT_ID is not set' })
@@ -35,6 +35,9 @@ export default defineEventHandler(async (event) => {
 
     // 3. Define Tools
     const tools = [
+        {
+            googleSearch: {}
+        },
         {
             functionDeclarations: [
                 {
@@ -93,7 +96,9 @@ export default defineEventHandler(async (event) => {
     The user will speak a request. You need to:
     1. Understand the user's intent.
     2. Use tools to fetch necessary data (GPS, HTTP) if needed.
-    3. Search for necessary Web Components using the 'search_webcomponents' tool.
+    3. Search for necessary Web Components using the 'search_webcomponents' tool OR the 'googleSearch' tool.
+       - Look for components on webcomponents.org, npmjs.com (via unpkg/jsdelivr), or cdnjs.
+       - You can use standard HTML5 tags (video, img, iframe, div) if a custom element is not found.
     4. Construct a JSON response with a list of components to render.
     
     The JSON response should have this structure:
@@ -107,8 +112,12 @@ export default defineEventHandler(async (event) => {
       ]
     }
 
-    ALWAYS use the 'search_webcomponents' tool to find component URLs. Do not guess URLs unless you are 100% sure.
-    If the user asks for a chart, search for 'chart'. If they ask for a map, search for 'map'.
+    CRITICAL INSTRUCTIONS:
+    - ALWAYS return valid JSON. Never return plain text or apologies.
+    - If you cannot find a specific Web Component, use a generic HTML tag (like 'div', 'iframe', 'img') and style it or set props to fulfill the request.
+    - For example, for a clock, if you can't find a component, use a 'div' with text content or an 'iframe' to a clock website.
+    - For charts, use 'img' with a QuickChart URL if a component is too hard to configure.
+    - Search aggressively. Use Google Search to find CDN links for web components (e.g. "wired-elements cdn", "chartjs web component cdn").
   `
 
     // We use a loop to handle tool calls manually since we want full control
