@@ -21,12 +21,66 @@
 
       <div class="divider"></div>
 
-      <v-btn icon variant="text" size="small" color="grey-darken-1">
-        <v-icon>mdi-microphone</v-icon>
+      <v-btn 
+        icon 
+        variant="text" 
+        size="small" 
+        :color="isRecording ? 'red' : 'grey-darken-1'"
+        @click="toggleRecording"
+      >
+        <v-icon>{{ isRecording ? 'mdi-stop' : 'mdi-microphone' }}</v-icon>
       </v-btn>
     </v-sheet>
   </div>
 </template>
+
+<script setup lang="ts">
+const isRecording = ref(false)
+let mediaRecorder: MediaRecorder | null = null
+let audioChunks: Blob[] = []
+
+const emit = defineEmits(['audio-recorded'])
+
+const startRecording = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    mediaRecorder = new MediaRecorder(stream)
+    audioChunks = []
+
+    mediaRecorder.ondataavailable = (event) => {
+      audioChunks.push(event.data)
+    }
+
+    mediaRecorder.onstop = () => {
+      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' })
+      emit('audio-recorded', audioBlob)
+      
+      // Stop all tracks
+      stream.getTracks().forEach(track => track.stop())
+    }
+
+    mediaRecorder.start()
+    isRecording.value = true
+  } catch (error) {
+    console.error('Error accessing microphone:', error)
+  }
+}
+
+const stopRecording = () => {
+  if (mediaRecorder && isRecording.value) {
+    mediaRecorder.stop()
+    isRecording.value = false
+  }
+}
+
+const toggleRecording = () => {
+  if (isRecording.value) {
+    stopRecording()
+  } else {
+    startRecording()
+  }
+}
+</script>
 
 <style scoped>
 .floating-controls {
