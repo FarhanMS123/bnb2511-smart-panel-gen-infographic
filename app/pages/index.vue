@@ -1,10 +1,16 @@
 <template>
-  <div>
-    <NuxtWelcome />
-    <div class="fixed bottom-4 right-4">
-      <NuxtLink to="/design-system-demo" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">
-        Go to Design System Demo
-      </NuxtLink>
+  <div class="h-screen w-screen bg-gray-50 relative">
+    <!-- Main Content Area -->
+    <div class="flex items-center justify-center h-full">
+      <h1 class="text-2xl text-gray-400">Main Content Area</h1>
     </div>
+
+    <!-- Floating Controls -->
+    <FloatingControls />
   </div>
 </template>
+
+<script setup lang="ts">
+// Components are auto-imported in Nuxt
+</script>
+
