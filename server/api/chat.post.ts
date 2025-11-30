@@ -36,9 +36,6 @@ export default defineEventHandler(async (event) => {
     // 3. Define Tools
     const tools = [
         {
-            googleSearch: {}
-        },
-        {
             functionDeclarations: [
                 {
                     name: 'search_webcomponents',
