@@ -15,21 +15,22 @@ export default defineEventHandler(async (event) => {
 
     // 2. Initialize GoogleGenAI (Vertex AI mode)
     // @ts-ignore
-    const project = process.env.VERTEX_PROJECT_ID
+    const project = process.env.VERTEX_PROJECT_ID || 'bnb-marathon-2025-felis-cato'
     // @ts-ignore
-    const location = process.env.VERTEX_LOCATION || 'us-central1'
+    const location = process.env.VERTEX_LOCATION || "global"
     // @ts-ignore
-    const modelName = process.env.GEMINI_MODEL || 'gemini-3-pro-preview'
+    const modelName = process.env.GEMINI_MODEL || "gemini-3-pro-preview"
+
+    console.log(process.env)
 
     if (!project) {
         throw createError({ statusCode: 500, statusMessage: 'VERTEX_PROJECT_ID is not set' })
     }
 
     const ai = new GoogleGenAI({
-        vertexAI: {
-            project: project,
-            location: location,
-        }
+        vertexai: true,
+        project: project,
+        location: location,
     })
 
     // 3. Define Tools
@@ -75,10 +76,6 @@ export default defineEventHandler(async (event) => {
         maxOutputTokens: 65535,
         temperature: 1,
         topP: 0.95,
-        // Thinking config is specific to some models, including it as requested
-        thinkingConfig: {
-            thinkingLevel: "HIGH",
-        },
         safetySettings: [
             { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'OFF' },
             { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'OFF' },
@@ -135,8 +132,7 @@ export default defineEventHandler(async (event) => {
             config: generationConfig,
         }
 
-        const result = await ai.models.generateContent(req)
-        const response = result.response
+        const response = await ai.models.generateContent(req)
 
         // Check for function calls
         // Note: The structure of response in @google/genai might differ slightly
